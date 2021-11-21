@@ -1,31 +1,31 @@
+## 스프링부트 테스트 빌드 시 발생하는 오류
 
-## TemplateEngine
-```java
-2021-11-13 23:09:15.199 ERROR 16696 --- [io-8080-exec-10] org.thymeleaf.TemplateEngine             : [THYMELEAF][http-nio-8080-exec-10] Exception processing template "post/postsView": An error happened during template parsing (template: "URL [file:src/main/resources/templates/post/postsView.html]")
-
-org.thymeleaf.exceptions.TemplateInputException: An error happened during template parsing (template: "URL [file:src/main/resources/templates/post/postsView.html]")
+**Try**
+```sh
+$ ./gradlew test
 ```
 
-- 템플릿 엔진 파싱 오류
-- 엔티티 속성 이름을 변경하고 html에 적용을 안 했음.
-
-
-
-## Amazon Linux에서 Build 오류 - 라이브러리 미지원 
-
-```java
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':generateAot'.
-Caused by: org.springframework.aot.CodeGenerationException: Could not generate spring.factories source
-Caused by: java.lang.IllegalStateException: Devtools is not supported yet, please remove the related de
+**Error Message**
+```
+Contextloads() failed
 ```
 
-- Devendencies : Devtools를 지원하지 않음
-- 이 라이브러리는 지워야 한다.
+**Why?**
+- main과 test 환경은 다르다.
+- test 과정에서 설정파일인 `application.yml`이 없어서 발생하는 오류
+
+**Solution**
+- `ApplicationTest.java`의 `@SpringBootTest` 주석처리
+
+or
+
+- test 패키지에 main의 `application.yml`을 그대로 추가해주기
 
 
 ## Amazon Linux에서 Build 오류 - JVM 메모리 부족
 
-```s
+**Error Message**
+```sh
   1 #
   2 # There is insufficient memory for the Java Runtime Environment to continue.
   3 # Native memory allocation (mmap) failed to map 262144 bytes for committing reserved memory.
@@ -54,6 +54,47 @@ Caused by: java.lang.IllegalStateException: Devtools is not supported yet, pleas
  26 #
 ```
 
-- Increase physical memory or swap space : 메모리가 부족하니 스왑 공간을 만들어라..
+**Why?**
+- 메모리가 부족
 
+**Solution**
+- Increase physical memory or swap space : 스왑 공간을 만들기
 > https://aws.amazon.com/ko/premiumsupport/knowledge-center/ec2-memory-swap-file/
+
+
+## pip3 install 시 MemoryError
+
+**Try**
+```sh
+$ pip3 install torch
+```
+
+**Error Message**
+```
+블라블라...
+
+MemoryError
+```
+
+**Why?**
+- 설치 시 caching을 사용해서 그럼
+- EC2 싱글코어에서 설치할려니까 설치 메모리가 부족?
+
+**Solution**
+- 캐싱 미사용 옵션을 주고 설치한다.
+  
+    ```sh
+    $ pip3 install --no-cache-dir torch
+    ```
+
+## OpenCV 설치 오류
+
+**Error Message**
+```
+ImportError: libGL.so.1: cannot open shared object file: No such file or directory
+```
+
+**Solution**
+```sh
+$ yum install mesa-libGL
+```
