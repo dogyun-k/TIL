@@ -1,3 +1,12 @@
+## template might not exist or might not be accessible by any of the configured Template Resolvers
+
+**Error Message**
+```java
+org.thymeleaf.exceptions.TemplateInputException: Error resolving template [/fragments/header.html], template might not exist or might not be accessible by any of the configured Template Resolvers
+```
+
+**Why?**
+- 프라그먼트 경로를 못 찾고 있는 것.
 
 ## TemplateEngine
 
