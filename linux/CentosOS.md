@@ -31,3 +31,16 @@ $ sudo update-alternatives --config python
 
 원하는 파이썬 버전 번호 입력 후 엔터
 
+## 포트 번호로 프로세스 종료하기
+
+```sh
+$ netstat -tnlp | grep ${port}
+```
+
+해당 명령어로 포트 번호 확인 후 
+
+```sh
+$ kill -9 ${port}
+```
+
+프로세스를 종료하면 된다.
