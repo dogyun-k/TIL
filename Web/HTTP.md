@@ -1,3 +1,10 @@
+## HTTP란
+
+- HyperText Transfer Protocol
+- 하이퍼텍스트 전송 규약
+- HTML과 같은 하이퍼텍스트 파일을 주고 받을 때의 규칙!
+
+
 
 
 ## 파일 전송 시
