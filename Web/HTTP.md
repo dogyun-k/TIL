@@ -1,5 +1,13 @@
+## HTTP란
 
-파일 전송 시
+- HyperText Transfer Protocol
+- 하이퍼텍스트 전송 규약
+- HTML과 같은 하이퍼텍스트 파일을 주고 받을 때의 규칙!
+
+
+
+
+## 파일 전송 시
 
 RestApi를 통해 이미지 파일 등을 Json에 넣어 보낼 경우
 

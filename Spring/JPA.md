@@ -200,7 +200,65 @@ DB마다 문법에 차이점이 조금씩 있는데 각자의 기능을 JPA에�
 - @JoinColumn(name = "") : 외래 키를 매핑할 때 사용.
 
 
+### JPQL
 
+Java Persistence Qeury Language : 엔티티 객체를 조회하는 객체지향 쿼리
+
+JPA에서 기본적으로 제공하는 메소드(쿼리를 메소드화한 것)로는 처리할 수 없는 복잡한 쿼리문을 날려야 할 때 사용한다.
+
+- JPQL을 쉽게 쓰기 위한 것들 : Criteira, QueryDSL... 빌더 클래스
+
+- Navive Qeury : SQL문 그 자체를 사용함. 근데 이거는 DBMS가 바뀌면 내용 수정할 게 많아질 거 같다. 특정 DB에만 있는 기능을 사용할 때 사용해야한다.
+
+JPA가 JPQL문을 해석하여 적절한 SQL로 바꾼 뒤 DB에 요청한다.
+
+엔티티 대상으로 동작된다. 테이블 속성값으로 동작XX
+
+**문법**
+
+- SELECT, UPDATE DELETE가 있다.
+
+    ```
+    select_문 :: = 
+        select_절
+        from_절
+        [where_절]
+        [groupby_절]
+        [having_절]
+        [orderby_절]
+    ```
+
+    ```
+    update_문 :: = update_절 [where_절]
+    ```
+
+    ```
+    delete_문 :: = delete_절 [where_절]
+    ```
+
+- 엔티티 속성은 대소문자 구분.
+- 별칭 필수 
+
+    ```sql
+    SELECT m FROM Member AS m
+    ```
+
+    AS는 생략 가능
+
+- 반환 타입 알 때: TypeQuery query = em.createQuery...
+- 모를 때 : Query query = em.createQuery...
+
+- 이름 기준 파라미터 바인딩 : `:`을 붙여준다.
+
+    ```sql
+    SELECT m FROM Member m where m.username=:username
+    ```
+
+- 위치 기준 파라미터 바인딩 : `?`다음에 위치 값 준다.
+
+    ```sql
+    SELECT m FROM Member m where m.username=?1
+    ```
 
 
 # 의문점
