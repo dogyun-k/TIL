@@ -34,7 +34,9 @@ Hibernate 기반의 자바 ORM 기술 표준이 JPA다. JPA는 API 명세임 (�
 
 - 위에꺼는 JPA 없이 코드로 대체 가능한데 객체 그래프 탐색은 개 빡세다..
 
-- 동일성이 보장된다. - 같은 데이터 row를 조회해도 일반적으로 JDBC와 SQL문을 통해 조회를 하여 객체에 저장한 것은 동일성 보장이 되지 않는다.
+- 동일성이 보장된다. 
+
+- 같은 데이터 row를 조회해도 일반적으로 JDBC와 SQL문을 통해 조회를 하여 객체에 저장한 것은 동일성 보장이 되지 않는다.
 
 > 동일성 : 객체 인스턴스의 주소 값 비교
 > 
@@ -101,7 +103,7 @@ DB마다 문법에 차이점이 조금씩 있는데 각자의 기능을 JPA에�
 4. 지연 로딩 : 나중에 추가함.
 
 
-## 5. 연관관계 매핑 기초
+## 연관관계 매핑
 
 - **객체의 참조와 테이블의 외래 키를 매핑**
 - 엔티티 간에 관계를 맺을 때 사용한다.
@@ -113,7 +115,8 @@ DB마다 문법에 차이점이 조금씩 있는데 각자의 기능을 JPA에�
 
     **주인만 읽기, 쓰기, 수정, 삭제가 가능.**
 
-    주인 아니면 읽기만 가능.
+    주인 아니면 읽기만
+     가능.
 
     주인은 `mappedBy`속성을 사용하지 않는다.
 
@@ -165,6 +168,30 @@ DB마다 문법에 차이점이 조금씩 있는데 각자의 기능을 JPA에�
     ```
 
     - 서로 참조할 수 있다. (A.B, B.A로)
+
+
+    ```java
+    class Post {
+        @Id
+        private Long post_id;
+
+        @ManyToOne
+        @JoinColumn(name = "USER_ID")
+        private User user;
+    }
+    ```
+
+    ```java
+    class User {
+        @Id
+        private Long user_id;
+
+        @OneToMany(mappedBy="user")
+        private List<Post> posts;
+    }
+    ```
+
+    - Post.user에 의해 매핑된다.
 
 - @ManyToOne : N:1 관계 매핑 정보. 
 
