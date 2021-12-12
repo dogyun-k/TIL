@@ -101,3 +101,55 @@ java.sql.SQLException: 'dietblog.hibernate_sequence' is not a SEQUENCE
 - 이러면 각자의 설정파일을 가지고 있겠지? 라고 멍청하게 생각했다.
 - 그리고 깃에 푸쉬를 하니까 설정파일이 없는 채로 푸쉬됐다.
 - 그 상태에서 배포환경에서 Pull을 하니까 설정파일이 없는 채로 실행이 됐던 것이다..
+
+
+
+## Springboot 구글 로그인 세션 테이블 생성
+
+**Error Message**
+```java
+org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [DELETE FROM SPRING_SESSION WHERE EXPIRY_TIME < ?]; nested exception is org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SPRING_SESSION" not found; SQL statement:
+DELETE FROM SPRING_SESSION WHERE EXPIRY_TIME < ? [42102-200]
+```
+
+**Why?**
+
+- 세션 정보를 저장할 테이블이 생성안되서 발생하는 문제
+
+
+**Solution**
+
+- 아래 쿼리 실행하여 수동으로 테이블을 생성해준다.
+
+    ```sql
+    CREATE TABLE SPRING_SESSION (
+        PRIMARY_ID CHAR(36) NOT NULL,
+        SESSION_ID CHAR(36) NOT NULL,
+        CREATION_TIME BIGINT NOT NULL,
+        LAST_ACCESS_TIME BIGINT NOT NULL,
+        MAX_INACTIVE_INTERVAL INT NOT NULL,
+        EXPIRY_TIME BIGINT NOT NULL,
+        PRINCIPAL_NAME VARCHAR(100),
+        CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
+    );
+
+    CREATE UNIQUE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (SESSION_ID);
+    CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);
+    CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
+
+    CREATE TABLE SPRING_SESSION_ATTRIBUTES (
+        SESSION_PRIMARY_ID CHAR(36) NOT NULL,
+        ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
+        ATTRIBUTE_BYTES LONGVARBINARY NOT NULL,
+        CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+        CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
+    );
+    ```
+
+
+## org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "start_value" not found [42122-202]
+
+- DB를 AWS RDS에서 H2로 변경했는데 이런 문제가 발생함.
+- 근데 그냥 해도 웹애플리케이션은 잘 동작함.
+
+**Why?**
